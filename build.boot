@@ -2,7 +2,11 @@
   :resource-paths #{"src"}
   :source-paths #{"test"}
   :dependencies '[[org.clojure/clojure "1.8.0"     :scope "provided"]
-                  [http-kit            "2.1.19"    :scope "test"]
+                  [figwheel "0.5.9-SNAPSHOT"]
+                  ;; AR - they are not required here because they live in the
+                  ;; pod, but they are still useful for the repl
+                  ;; [figwheel-sidecar "0.5.9-SNAPSHOT" :scope "test"]
+                  ;; [http-kit            "2.1.19"    :scope "test"]
                   [adzerk/boot-test    "1.1.0"     :scope "test"]])
 
 (require '[adzerk.boot-test :refer [test]])
