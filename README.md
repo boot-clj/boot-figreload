@@ -1,5 +1,5 @@
-# boot-figreload 
-[![via Clojars](http://clojars.org/boot-figreload/latest-version.svg)]
+# boot-figreload
+[![Clojars Project](https://img.shields.io/clojars/v/powerlaces/boot-figreload.svg)](https://clojars.org/powerlaces/boot-figreload)
 
 [Boot][1] task to automatically reload resources in the browser when files in
 the project change. Featuring [lein-figwheel][2].
@@ -86,7 +86,7 @@ Legacy examples of how to use `reload` in development can be useful as well. See
 ## License
 
 Copyright &copy; 2014 Adzerk<br>
-Copyright &copy; 2015-2016 Juho Teperi
+Copyright &copy; 2015-2016 Juho Teperi<br>
 Copyright &copy; 2017 Juho Teperi and Andrea Richiardi
 
 Distributed under the Eclipse Public License either version 1.0 or (at
