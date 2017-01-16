@@ -13,10 +13,10 @@ the project change. Featuring [lein-figwheel][2].
 Add dependency to `build.boot` and `require` the task:
 
 ```clj
-(set-env! :dependencies '[[adzerk/boot-reload "X.Y.Z" :scope "test"]
+(set-env! :dependencies '[[powerlaces/boot-figreload "X.Y.Z" :scope "test"]
                           [adzerk/boot-cljs "2.0.0-SNAPSHOT" :scope "test"]])
 
-(require '[adzerk.boot-reload :refer [reload]])
+(require '[powerlaces.boot-figreload :refer [reload]])
 ```
 
 Add the task to your development pipeline **before `(cljs ...)`**:

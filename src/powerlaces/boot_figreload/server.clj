@@ -1,11 +1,11 @@
-(ns adzerk.boot-reload.server
+(ns powerlaces.boot-figreload.server
   (:require
    [clojure.java.io    :as io]
    [boot.util          :as util]
    [org.httpkit.server :as http]
    [clojure.string     :as string]
-   [adzerk.boot-reload.figwheel :as figwheel]
-   [adzerk.boot-reload.messages :as msgs])
+   [powerlaces.boot-figreload.figwheel :as figwheel]
+   [powerlaces.boot-figreload.messages :as msgs])
   (:import
    [java.io IOException]))
 

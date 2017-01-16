@@ -1,6 +1,6 @@
 (ns ^{:doc "Figwheel bindings and/or functions copied over."
       :author "Andrea Richiardi"}
-    adzerk.boot-reload.figwheel
+    powerlaces.boot-figreload.figwheel
   (:require [clojure.string :as str]
             [clojure.walk :as walk]
             [figwheel-sidecar.config :as config]
@@ -8,8 +8,8 @@
             [figwheel-sidecar.cljs-utils.exception-parsing :as ex-parsing]
             [figwheel-sidecar.build-middleware.injection :as injection]
             [cljs.compiler]
-            [adzerk.boot-reload.util :as util]
-            [adzerk.boot-reload.messages :as msgs]))
+            [powerlaces.boot-figreload.util :as util]
+            [powerlaces.boot-figreload.messages :as msgs]))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; DIRECT IMPORTS ;;

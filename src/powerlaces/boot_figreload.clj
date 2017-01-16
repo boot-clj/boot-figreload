@@ -1,4 +1,4 @@
-(ns adzerk.boot-reload
+(ns powerlaces.boot-figreload
   {:boot/export-tasks true}
   (:require
    [boot.core          :as b]
@@ -10,7 +10,7 @@
    [boot.util          :as butil]
    [boot.core          :refer :all]
    [boot.from.digest        :as digest]
-   [adzerk.boot-reload.util :as util]))
+   [powerlaces.boot-figreload.util :as util]))
 
 (def ^:private deps '[[http-kit "2.1.18"]
                       [figwheel-sidecar "0.5.9-SNAPSHOT"]])
@@ -35,7 +35,7 @@
                    #{})))))
 
 (defn- start-server [pod {:keys [ip port ws-host ws-port secure?] :as opts}]
-  (let [{:keys [ip port]} (pod/with-call-in pod (adzerk.boot-reload.server/start ~opts))
+  (let [{:keys [ip port]} (pod/with-call-in pod (powerlaces.boot-figreload.server/start ~opts))
         listen-host       (cond (= ip "0.0.0.0") "localhost" :else ip)
         client-host       (cond ws-host ws-host (= ip "0.0.0.0") "localhost" :else ip)
         proto             (if secure? "wss" "ws")]
@@ -44,7 +44,7 @@
 
 (defn- write-bootstrap-ns! [pod parent-path build-config]
   (let [[ns-sym ns-path ns-content] (pod/with-call-in pod
-                                      (adzerk.boot-reload.server/bootstrap-ns
+                                      (powerlaces.boot-figreload.server/bootstrap-ns
                                        ~build-config))
         f (io/file parent-path ns-path)]
     (io/make-parents f)
@@ -54,13 +54,13 @@
 
 (defn- send-visual! [pod client-opts visual-map]
   (pod/with-call-in pod
-    (adzerk.boot-reload.server/send-visual!
+    (powerlaces.boot-figreload.server/send-visual!
      ~client-opts
      ~visual-map)))
 
 (defn- send-changed! [pod client-opts change-map]
   (pod/with-call-in pod
-    (adzerk.boot-reload.server/send-changed!
+    (powerlaces.boot-figreload.server/send-changed!
      ~client-opts
      ~change-map)))
 
@@ -69,7 +69,7 @@
   (when (not= :nodejs (-> old-spec :compiler-options :target))
     (io/make-parents out-file)
     (let [new-spec (pod/with-call-in pod
-                     (adzerk.boot-reload.server/add-cljs-edn-init
+                     (powerlaces.boot-figreload.server/add-cljs-edn-init
                       ~build-config
                       ~old-spec))]
       (butil/info "Adding :require(s) to %s...\n" (.getName out-file))
@@ -148,13 +148,13 @@
         url  (start-server @pod {:ip ip :port port :ws-host ws-host
                                  :ws-port ws-port :secure? secure
                                  :open-file open-file})]
-    (b/cleanup (pod/with-call-in @pod (adzerk.boot-reload.server/stop)))
+    (b/cleanup (pod/with-call-in @pod (powerlaces.boot-figreload.server/stop)))
     (fn [next-task]
       (fn [fileset]
         ;; AR - TODO - pass the :open-file option down to figwheel and figure
         ;; out how to handle it
         (pod/with-call-in @pod
-          (adzerk.boot-reload.server/set-options {:open-file ~open-file}))
+          (powerlaces.boot-figreload.server/set-options {:open-file ~open-file}))
 
         (let [changed-cljs-edns (relevant-cljs-edns (b/fileset-diff @prev-pre fileset :hash) ids)
               client-opts (merge {:project-id (-> (b/get-env) :directories string/join digest/md5)
@@ -201,7 +201,7 @@
                           ;; can give multiple errors.
                           (if (and (not disable-hud)
                                    (or (= :boot-cljs (:from (ex-data e)))
-                                       (:adzerk.boot-reload/exception (ex-data e))))
+                                       (:powerlaces.boot-figreload/exception (ex-data e))))
                             (send-visual! @pod client-opts {:exception (util/serialize-exception e)}))
                           (throw e)))]
           (let [cljs-edns (relevant-cljs-edns fileset ids)

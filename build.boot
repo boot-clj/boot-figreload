@@ -41,5 +41,6 @@
    (push :repo "clojars" :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))
 
 (deftask run-tests []
-  (comp
-    (test :namespaces #{'adzerk.boot-reload.server-test})))
+  ;; AR - no tests for now
+  ;; (test :namespaces #{})
+  )

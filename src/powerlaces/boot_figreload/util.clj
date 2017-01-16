@@ -1,4 +1,4 @@
-(ns adzerk.boot-reload.util
+(ns powerlaces.boot-figreload.util
   (:require [clojure.string :as string]
             [clojure.java.io :as io]
             [clojure.walk :as walk])

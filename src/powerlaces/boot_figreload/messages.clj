@@ -1,6 +1,6 @@
 (ns ^{:doc "Message management."
       :author "Andrea Richiardi"}
-    adzerk.boot-reload.messages)
+    powerlaces.boot-figreload.messages)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; FILE CHANGED NOTIFICATIONS ;;
