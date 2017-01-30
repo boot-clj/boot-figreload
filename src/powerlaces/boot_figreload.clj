@@ -163,6 +163,8 @@
                                   :websocket-url url
                                   :asset-host asset-host}
                                  client-opts)]
+          (when (> @butil/*verbosity* 2)
+            (butil/dbug "Client-opts:\n%s\n" (butil/pp-str client-opts)))
           (if-not (empty? changed-cljs-edns)
             (doseq [f changed-cljs-edns]
               (let [path     (tmp-path f)

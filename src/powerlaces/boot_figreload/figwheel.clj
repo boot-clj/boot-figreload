@@ -133,11 +133,7 @@
 
 (defn- clean-class-form
   [form]
-  (update form 1 #(->> %
-                       (re-find #"^adzerk.boot_cljs.util.proxy\$(.+)\$.+")
-                       second
-                       symbol
-                       resolve)))
+  (update form 1 #(-> % symbol resolve)))
 
 (defn figwheelify-exception
   "Boot-cljs to figwheel exception map
@@ -159,3 +155,7 @@
                            figwheelify-exception
                            (ex-parsing/parse-inspected-exception opts))}
       (wrap-msg opts)))
+
+(comment
+  (def ex-map {:class "clojure.lang.ExceptionInfo", :message "Parameter declaration \".info\" should be a vector at line 10, column 1 in file src/figreload_demo/core.cljs\n", :data {:file "src/figreload_demo/core.cljs", :line 10, :column 1, :tag :cljs/analysis-error, :from :boot-cljs, :boot.util/omit-stacktrace? true}, :cause {:class "clojure.lang.ExceptionInfo", :message "failed compiling file:/home/arichiardi/.boot/cache/tmp/home/arichiardi/git/figreload-demo/mbk/7of19k/figreload_demo/core.cljs", :data {:file "/home/arichiardi/.boot/cache/tmp/home/arichiardi/git/figreload-demo/mbk/7of19k/figreload_demo/core.cljs"}, :cause {:class "clojure.lang.ExceptionInfo", :message "Parameter declaration \".info\" should be a vector at line 10 /home/arichiardi/.boot/cache/tmp/home/arichiardi/git/figreload-demo/mbk/7of19k/figreload_demo/core.cljs", :data {:file "/home/arichiardi/.boot/cache/tmp/home/arichiardi/git/figreload-demo/mbk/7of19k/figreload_demo/core.cljs", :line 10, :column 1, :tag :cljs/analysis-error}, :cause {:class "java.lang.IllegalArgumentException", :message "Parameter declaration \".info\" should be a vector", :data nil, :cause nil}}}})
+  )
