@@ -1,7 +1,8 @@
 (ns ^{:doc "Figwheel bindings and/or functions copied over."
       :author "Andrea Richiardi"}
     powerlaces.boot-figreload.figwheel
-  (:require [clojure.string :as str]
+  (:require [boot.pod :as pod]
+            [clojure.string :as str]
             [clojure.walk :as walk]
             [figwheel-sidecar.config :as config]
             [figwheel-sidecar.build-middleware.javascript-reloading :as js-reload]
@@ -127,13 +128,52 @@
          :message (ex-parsing/parse-warning (first warning-maps))}
         (wrap-msg opts))))
 
-(defn- class-form?
-  [form]
-  (and (vector? form) (= :class (first form))))
+(defn trim-source-paths
+  "Remove any :source-paths or :resource-paths parent from path"
+  [path]
+  (->> (:source-paths pod/env)
+       (filter #(str/index-of path %))
+       (map #(-> path
+                 (str/replace % "")
+                 (str/replace-first #"^\/" "")))))
 
 (defn- clean-class-form
   [form]
   (update form 1 #(-> % symbol resolve)))
+
+(defn- relativize-data-form
+  "Replace absolute paths with relative ones"
+  [relative-path form]
+  (let [file (get-in form [1 :file])]
+    (println (:resource-paths pod/env))
+    (cond
+      (or (not form)
+          (not (string? relative-path))
+          (not (string? file))) form
+
+      ;; We replace only if it is a substring of the original
+      (some (partial str/includes? file) (trim-source-paths relative-path))
+      (assoc-in form [1 :file] relative-path)
+
+      :else form)))
+
+(defn- relativize-cause-form
+  "Replace absolute paths with relative ones where necessary"
+  [relative-path form]
+  (let [file (get-in form [1 :data :file])
+        message (get-in form [1 :message])]
+    (cond
+      (or (not form)
+          (not (string? file))
+          (not (string? message))) form
+
+      ;; We replace only if it is there is a substring in the original msg
+      (str/includes? message file)
+      (assoc-in form [1 :message] (-> message
+                                      (str/replace file relative-path)
+                                      (str/replace "file:" "")))
+
+      :else form)))
 
 (defn figwheelify-exception
   "Boot-cljs to figwheel exception map
@@ -142,10 +182,18 @@
   from boot-cljs and we want to convert it to a format that figwheel can
   parse."
   [ex]
-  (walk/postwalk #(if-not (class-form? %)
-                    %
-                    (clean-class-form %))
-                 ex))
+  (let [relative-file (when (= :boot-cljs (get-in ex [:data :from]))
+                        (get-in ex [:data :file]))]
+    (walk/prewalk #(cond
+                     ;; Convert string in :class to a java.lang.Class obj
+                     (util/map-entry-with-key? % :class) (clean-class-form %)
+                     ;; Make all the :data :file entries relative
+                     ;; I assume (!) the first exception contains the relative
+                     ;; path
+                     (and relative-file (util/map-entry-with-key? % :cause)) (relativize-cause-form relative-file %)
+                     (and relative-file (util/map-entry-with-key? % :data)) (relativize-data-form relative-file %)
+                     :else %)
+                  ex)))
 
 (defmethod msgs/visual-payload-by-type :exception
   [opts [type ex-map]]

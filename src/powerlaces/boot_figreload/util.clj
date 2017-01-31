@@ -1,13 +1,14 @@
 (ns powerlaces.boot-figreload.util
-  (:require [clojure.string :as string]
+  (:require [clojure.string :as str]
             [clojure.java.io :as io]
-            [clojure.walk :as walk])
+            [clojure.walk :as walk]
+            [boot.file :as file])
   (:import [java.io File]))
 
 (defn build-id
   "Return the build id from the file path (as string)."
   [file-path]
-  (string/replace file-path #"\.cljs\.edn$" ""))
+  (str/replace file-path #"\.cljs\.edn$" ""))
 
 ;;
 ;; Exception serialization
@@ -42,3 +43,7 @@
                 (if (empty? kvs) nil (into {} kvs)))
               x))]
     (walk/postwalk f m)))
+
+(defn map-entry-with-key?
+  [form k]
+  (and (vector? form) (= k (first form))))
