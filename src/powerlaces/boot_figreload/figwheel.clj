@@ -145,7 +145,6 @@
   "Replace absolute paths with relative ones"
   [relative-path form]
   (let [file (get-in form [1 :file])]
-    (println (:resource-paths pod/env))
     (cond
       (or (not form)
           (not (string? relative-path))
