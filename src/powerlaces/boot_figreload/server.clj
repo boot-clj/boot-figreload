@@ -87,16 +87,11 @@
 ;; WEBSOCKET ;;
 ;;;;;;;;;;;;;;;
 
-(defmulti handle-message (fn [channel message] (:type message)))
+(defmulti handle-message (fn [channel message] (:figwheel-event message)))
 
-(defmethod handle-message :open-file [channel {:keys [file line column]}]
-  (when-let [open-file (:open-file @options)]
-    (let [cmd (format open-file (or line 0) (or column 0) (or file ""))]
-      (util/dbug "Open-file call: %s\n" cmd)
-      (try
-        (.exec (Runtime/getRuntime) cmd)
-        (catch Exception e
-          (util/fail "There was a problem running open-file command: %s\n" cmd))))))
+(defmethod handle-message :default [channel message]
+  (util/warn "Received Figwheel message %s: not supported at this time\n" (:figwheel-event message))
+  (util/dbug* "Figwheel Message:\n%s\n" (util/pp-str message)))
 
 (defn connect! [channel]
   (util/dbug "Channel \"%s\" opened...\n" (str channel))
