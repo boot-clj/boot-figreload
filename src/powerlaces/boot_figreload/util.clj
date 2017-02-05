@@ -2,13 +2,36 @@
   (:require [clojure.string :as str]
             [clojure.java.io :as io]
             [clojure.walk :as walk]
-            [boot.file :as file])
+            [boot.file :as file]
+            [boot.from.digest :as digest])
   (:import [java.io File]))
+
+;; From cljs/analyzer.cljc
+(def js-reserved
+  #{"arguments" "abstract" "boolean" "break" "byte" "case"
+    "catch" "char" "class" "const" "continue"
+    "debugger" "default" "delete" "do" "double"
+    "else" "enum" "export" "extends" "final"
+    "finally" "float" "for" "function" "goto" "if"
+    "implements" "import" "in" "instanceof" "int"
+    "interface" "let" "long" "native" "new"
+    "package" "private" "protected" "public"
+    "return" "short" "static" "super" "switch"
+    "synchronized" "this" "throw" "throws"
+    "transient" "try" "typeof" "var" "void"
+    "volatile" "while" "with" "yield" "methods"
+    "null" "constructor"})
 
 (defn build-id
   "Return the build id from the file path (as string)."
-  [file-path]
-  (str/replace file-path #"\.cljs\.edn$" ""))
+  [cljs-edn-path]
+  (assert (and (re-find #"\.cljs\.edn$" cljs-edn-path)
+               (re-find #"(\/|\\)" cljs-edn-path))
+          (format "Build-id expects a .cljs.edn file path. Received %s, this might be a bug." cljs-edn-path))
+  (let [bid (str/replace cljs-edn-path #"(.*)(\/|\\)(\w+)(\.cljs\.edn)$" "$3")]
+    (cond-> bid
+      (js-reserved bid) (str "$")
+      true (str "_" (->> cljs-edn-path digest/sha-1 (take 8) (str/join))))))
 
 ;;
 ;; Exception serialization
