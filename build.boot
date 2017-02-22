@@ -1,12 +1,14 @@
 (set-env!
- :source-paths #{"src"}
- :dependencies '[[org.clojure/clojure "1.8.0"     :scope "provided"]
+ :source-paths #{"src" "test"}
+ :dependencies '[[org.clojure/clojure "1.8.0" :scope "provided"]
                  [figwheel "0.5.9"]
-                 [adzerk/bootlaces    "0.1.13"    :scope "test"]
-                 [adzerk/boot-test    "1.1.0"     :scope "test"]])
+                 [adzerk/bootlaces "0.1.13"    :scope "test"]
+                 [adzerk/boot-test "1.1.0"     :scope "test"]
+                 [metosin/boot-alt-test "0.3.0" :scope "test"]])
 
 (require '[adzerk.boot-test :refer [test]]
-         '[adzerk.bootlaces :refer [bootlaces! build-jar push-snapshot push-release]])
+         '[adzerk.bootlaces :refer [bootlaces! build-jar push-snapshot push-release]]
+         '[metosin.boot-alt-test :refer [alt-test]])
 
 (def +version+ "0.1.0-SNAPSHOT")
 (bootlaces! +version+)
@@ -42,7 +44,9 @@
      (push-snapshot)
      (push-release))))
 
-(deftask run-tests []
-  ;; AR - no tests for now
-  ;; (test :namespaces #{})
-  )
+(ns-unmap *ns* 'test)
+
+(deftask test
+  "Run the tests once"
+  []
+  (alt-test))

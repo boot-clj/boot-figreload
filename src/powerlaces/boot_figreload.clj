@@ -90,7 +90,7 @@
   the fileset."
   [tmpfiles]
   (mapv #(-> {}
-             (assoc :build-id (util/build-id (:path %)))
+             (assoc :build-id (-> % b/tmp-file .getPath util/build-id))
              (merge (:adzerk.boot-cljs/opts %)))
         tmpfiles))
 
@@ -168,9 +168,10 @@
           (if-not (empty? changed-cljs-edns)
             (doseq [f changed-cljs-edns]
               (let [path     (tmp-path f)
-                    spec     (-> f tmp-file slurp read-string)
+                    file     (tmp-file f)
+                    spec     (-> file slurp read-string)
                     build-config (make-build-config (merge client-opts (:boot-reload spec))
-                                                    (util/build-id path))]
+                                                    (-> file .getPath util/build-id))]
                 (when (> @butil/*verbosity* 2)
                   (butil/dbug "Content of %s:\n%s\n" path (butil/pp-str spec)))
                 (butil/dbug "Build config:\n%s\n" (butil/pp-str build-config))
