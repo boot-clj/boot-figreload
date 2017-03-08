@@ -30,7 +30,7 @@
           (format "Build-id expects a .cljs.edn file path. Received %s, this might be a bug." cljs-edn-path))
   (let [bid (str/replace cljs-edn-path #"(.*)(\/|\\)(\w+)(\.cljs\.edn)$" "$3")]
     (cond-> bid
-      (js-reserved bid) (str "$")
+      (contains? js-reserved bid) (str "$")
       true (str "_" (->> cljs-edn-path digest/sha-1 (take 8) (str/join))))))
 
 ;;
