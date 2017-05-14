@@ -51,11 +51,10 @@
 (defn changed-messages
   "Return (file) change-related messages"
   [client-opts watch-map]
-  (let [cljs-opts-seq (:cljs-opts-seq watch-map)
-        change-maps-by-ext (select-keys
+  (let [change-maps-by-ext (select-keys
                             (->> watch-map
                                  :change-set
-                                 (assign-cljs-opts-by-path cljs-opts-seq)
+                                 (assign-cljs-opts-by-path (:cljs-opts-seq watch-map))
                                  (group-by #(->> (:relative-path %)
                                                  (re-find #"\.(\p{Alnum}+$)")
                                                  second

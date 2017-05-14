@@ -145,13 +145,18 @@
    w ws-host WSADDR  str  "The websocket host clients connect to. Defaults to current host. (optional)"
    s secure          bool "Flag to indicate whether the client should connect via wss. Defaults to false."
    ;; Client Configuration
-   j on-jsload       SYM    sym  "The callbacks to call when JS files are reloaded. (optional)"
+   ^{:deprecated "--j/--on-jsload should go in the :boot-reload key of your .cljs.edn(s)."}
+   j on-jsload       SYM    sym  "The callback to call when JS files are reloaded. (deprecated)"
+
    _ client-opts     OPTS   edn  "Options passed to the client directly (overrides the others)."
    v disable-hud            bool "Toggle to disable HUD. Defaults to false (visible)."
    o open-file       CMD    str  "The command to run when warning or exception is clicked on HUD. Passed to format. (optional)"
    ;; Other Configuration - AR - (?)
    _ asset-host      HOST   str  "The asset-host where to load files from. Defaults to host of opened page. (optional)"
-   a asset-path      PATH   str  "Sets the output directory for temporary files used during compilation. (optional)"
+
+   ^{:deprecated "--a/--asset-path should go in the boot-cljs :compiler-options key of your .cljs.edn(s)."}
+   a asset-path      PATH   str  "Sets the output directory for temporary files used during compilation. (deprecated)"
+
    c cljs-asset-path PATH   str  "The actual asset path. This is added to the start of reloaded urls. (optional)"
    t target-path     VAL    str  "Target path to load files from, used WHEN serving files using file: protocol. (optional)"
    _ only-by-re      REGEX [regex] "Vector of path regexes (for `boot.core/by-re`) to restrict reloads to only files within these paths (optional)."]
@@ -174,7 +179,6 @@
 
         (let [changed-cljs-edns (relevant-cljs-edns (b/fileset-diff @prev-pre fileset :hash) ids)
               client-opts (merge {:project-id (-> (b/get-env) :directories string/join digest/md5)
-                                  :on-jsload on-jsload
                                   :websocket-host ws-host
                                   :websocket-url url
                                   :asset-host asset-host}
@@ -248,7 +252,6 @@
             (send-changed! @pod
                            client-opts
                            {:target-path target-path
-                            :asset-path asset-path
                             :cljs-asset-path cljs-asset-path
                             :cljs-opts-seq cljs-opts-seq
                             :change-set (changed @prev fileset only-by-re static-files)})
