@@ -23,7 +23,7 @@
     "null" "constructor"})
 
 (defn build-id
-  "Return the build id from the file path (as string)."
+  "Return the build id from the .cljs.edn file path (as string)."
   [cljs-edn-path]
   (assert (and (re-find #"\.cljs\.edn$" cljs-edn-path)
                (re-find #"(\/|\\)" cljs-edn-path))

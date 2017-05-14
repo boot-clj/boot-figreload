@@ -105,6 +105,22 @@
   (-> {:id build-id :figwheel client-opts}
       util/remove-nils))
 
+(defn read-cljs-edn-spec!
+  [cljs-edn-tmpfile]
+  (let [file (tmp-file cljs-edn-tmpfile)
+        path (tmp-path cljs-edn-tmpfile)]
+    (if (.exists file)
+      (try (-> file slurp read-string)
+           (catch Exception e
+             (let []
+               (throw (ex-info
+                       (format "Cannot read %s" path)
+                       {:cljs-edn {:path path
+                                   :content (slurp file)}}
+                       e)))))
+      (throw (ex-info (format "The file %s does not exist. This might be a bug." (.getAbsolutePath file))
+                      {:cljs-edn path})))))
+
 (deftask reload
   "Live reload of page resources in browser via websocket.
 
@@ -167,9 +183,9 @@
             (butil/dbug "Client-opts:\n%s\n" (butil/pp-str client-opts)))
           (if-not (empty? changed-cljs-edns)
             (doseq [f changed-cljs-edns]
-              (let [path     (tmp-path f)
+              (let [spec     (read-cljs-edn-spec! f)
+                    path     (tmp-path f) ;; this is relative to boot's fileset cache
                     file     (tmp-file f)
-                    spec     (-> file slurp read-string)
                     build-config (make-build-config (merge client-opts (:boot-reload spec))
                                                     (-> file .getPath util/build-id))]
                 (when (> @butil/*verbosity* 2)

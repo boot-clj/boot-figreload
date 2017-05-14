@@ -1,5 +1,5 @@
 (set-env!
- :source-paths #{"src" "test"}
+ :source-paths #{"src"}
  :dependencies '[[org.clojure/clojure "1.8.0" :scope "provided"]
                  [figwheel "0.5.9"]
                  [adzerk/bootlaces "0.1.13"    :scope "test"]
@@ -49,4 +49,6 @@
 (deftask test
   "Run the tests once"
   []
+  (set-env! :source-paths #(conj % "test")
+            :dependencies #(conj % '[figwheel-sidecar "0.5.9"]))
   (alt-test))
