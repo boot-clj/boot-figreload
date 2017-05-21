@@ -87,12 +87,13 @@
 
 (defn cljs-opts-seq
   "Return a sequence of compiler options given boot's .cljs.edn files on
-  the fileset."
+  the fileset. If no :adzerk.boot-cljs/opts key is found on the tmpfile,
+  no entry is added to the output sequence."
   [tmpfiles]
-  (mapv #(-> {}
-             (assoc :build-id (-> % b/tmp-file .getPath util/build-id))
-             (merge (:adzerk.boot-cljs/opts %)))
-        tmpfiles))
+  (->> tmpfiles
+       (map #(when-let [opts (:adzerk.boot-cljs/opts %)]
+               (assoc opts :build-id (-> % b/tmp-file .getPath util/build-id))))
+       (remove nil?)))
 
 (defn make-build-config
   "Return an ClojureScript build configuration map akin to leinengen and
