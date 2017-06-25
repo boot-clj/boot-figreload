@@ -13,21 +13,82 @@ the project change. Featuring [lein-figwheel][2].
 Add dependency to `build.boot` and `require` the task:
 
 ```clj
-(set-env! :dependencies '[[powerlaces/boot-figreload "X.Y.Z" :scope "test"]
-                          [adzerk/boot-cljs "2.0.0-SNAPSHOT" :scope "test"]])
+(set-env! :dependencies '[[adzerk/boot-cljs "2.1.0-SNAPSHOT" :scope "test"]
+                          [powerlaces/boot-figreload "0.1.1-SNAPSHOT" :scope "test"]
+                          [pandeiro/boot-http "0.7.6" :scope "test"]
 
-(require '[powerlaces.boot-figreload :refer [reload]])
+                          [adzerk/boot-cljs-repl "0.3.3" :scope "test"]
+                          [com.cemerick/piggieback "0.2.1"  :scope "test"]
+                          [weasel "0.7.0"  :scope "test"]
+                          [org.clojure/tools.nrepl "0.2.12" :scope "test"]])
+
+(require '[adzerk.boot-cljs          :refer [cljs]]
+         '[adzerk.boot-cljs-repl     :refer [cljs-repl]]
+         '[powerlaces.boot-figreload :refer [reload]]
+         '[pandeiro.boot-http        :refer [serve]])
 ```
 
 Add the task to your development pipeline **before `(cljs ...)`**:
 
 ```clj
 (deftask dev []
-  (comp
-   (reload)
-   (cljs)))
+  (comp (serve)
+        (watch)
+        (reload)
+        (cljs-repl)
+        (cljs :source-map true
+              :optimizations :none)))
 ```
 
+### Dirac
+
+Boot-figreload is compatible with Dirac, enabling REPL evaluation in-browser on top of Figwheel's reloading.
+
+Your `dev` task could therefore become:
+
+```clj
+(set-env! :dependencies '[[adzerk/boot-cljs "2.1.0-SNAPSHOT" :scope "test"]
+                          [powerlaces/boot-figreload "0.1.1-SNAPSHOT" :scope "test"]
+                          [pandeiro/boot-http "0.7.6" :scope "test"]
+                          
+                          ;; Dirac and cljs-devtoos
+                          [binaryage/dirac "RELEASE" :scope "test"]
+                          [binaryage/devtools "RELEASE" :scope "test"]
+                          [powerlaces/boot-cljs-devtools "0.2.0" :scope "test"]
+
+                          [adzerk/boot-cljs-repl "0.3.3" :scope "test"]
+                          [com.cemerick/piggieback "0.2.1"  :scope "test"]
+                          [weasel "0.7.0"  :scope "test"]
+                          
+                          ;; Has to be `0.2.13`
+                          [org.clojure/tools.nrepl "0.2.13" :scope "test"]])
+
+(require '[adzerk.boot-cljs              :refer [cljs]]
+         '[adzerk.boot-cljs-repl         :refer [cljs-repl]]
+         '[powerlaces.boot-figreload     :refer [reload]]
+         '[powerlaces.boot-cljs-devtools :refer [dirac cljs-devtools]]
+         '[pandeiro.boot-http            :refer [serve]])
+
+...
+
+(deftask dev [d with-dirac bool "Enable Dirac Devtools."]
+  (comp (serve)
+        (watch)
+        (cljs-devtools)
+        (reload)
+        (if-not with-dirac
+          (cljs-repl)
+          (dirac))
+        (cljs :source-map true
+              :optimizations :none
+              :compiler-options {:external-config
+                                 {:devtools/config {:features-to-install [:formatters :hints]
+                                                    :fn-symbol "λ"
+                                                    :print-config-overrides true}}})))
+                                                    
+```
+                      
+                                                    
 ## Figwheel Integration Status
 
 Ok this is a super alpha of the figwheel client in `boot-reload`.
