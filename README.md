@@ -71,7 +71,7 @@ Your `dev` task could therefore become:
 
 ...
 
-(deftask dev [d with-dirac bool "Enable Dirac Devtools."]
+(deftask dev [D with-dirac bool "Enable Dirac Devtools."]
   (comp (serve)
         (watch)
         (cljs-devtools)
