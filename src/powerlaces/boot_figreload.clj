@@ -66,17 +66,16 @@
 
 (defn- add-init!
   [pod build-config old-spec out-file]
-  (when (not= :nodejs (-> old-spec :compiler-options :target))
-    (io/make-parents out-file)
-    (let [new-spec (pod/with-call-in pod
-                     (powerlaces.boot-figreload.server/add-cljs-edn-init
-                      ~build-config
-                      ~old-spec))]
-      (butil/info "Adding :require(s) to %s...\n" (.getName out-file))
-      (butil/dbug* "%s\n" (butil/pp-str new-spec))
-      (->> new-spec
-           pr-str
-           (spit out-file)))))
+  (io/make-parents out-file)
+  (let [new-spec (pod/with-call-in pod
+                   (powerlaces.boot-figreload.server/add-cljs-edn-init
+                    ~build-config
+                    ~old-spec))]
+    (butil/info "Adding :require(s) to %s...\n" (.getName out-file))
+    (butil/dbug* "%s\n" (butil/pp-str new-spec))
+    (->> new-spec
+         pr-str
+         (spit out-file))))
 
 (defn- relevant-cljs-edns [fileset ids]
   (let [relevant  (map #(str % ".cljs.edn") ids)
