@@ -119,7 +119,7 @@ Whereas the implemented [client to server](https://github.com/arichiardi/lein-fi
 
 ### To be thorougly tested:
 
-- [ ] Node client
+- [x] Node client
 - [ ] Web-worker client
 - [ ] Trigger of multiple `js-onload`s
 
