@@ -2,13 +2,16 @@
       :author "Andrea Richiardi"}
     powerlaces.boot-figreload.figwheel
   (:require [boot.pod :as pod]
+            [boot.util :as butil]
             [clojure.string :as str]
             [clojure.walk :as walk]
+            [clojure.java.io :as io]
             [figwheel-sidecar.config :as config]
             [figwheel-sidecar.build-middleware.javascript-reloading :as js-reload]
             [figwheel-sidecar.cljs-utils.exception-parsing :as ex-parsing]
             [figwheel-sidecar.build-middleware.injection :as injection]
             [cljs.compiler]
+            [cljs.closure]
             [powerlaces.boot-figreload.util :as util]
             [powerlaces.boot-figreload.messages :as msgs]))
 
@@ -60,11 +63,25 @@
 
 (defn- guess-namespace
   [compile-opts file-map]
-  (let [js-file-path (:full-path file-map)]
-    (assert (string? js-file-path) ":full-path must be a string, This is an bug, please report it.")
-    (assert (re-find #"\.js$" js-file-path) ":full-path must point to a Javascript file. This is an bug, please report it.")
-    (->> js-file-path
-         (js-reload/js-file->namespaces compile-opts)
+  (assert (:relative-path file-map) "The file-map is missing some fields, this is a bug.")
+  (assert (:full-path file-map) "The file-map is missing some fields, this is a bug.")
+  ;; Workaround for: https://github.com/bhauman/lein-figwheel/pull/537
+  ;;
+  ;; No figwheel-sidecar.build-middleware.javascript-reloading/guess-namespace
+  ;; because deemed broken (sorry Bruce, it will be fixed I am sure).
+  ;; We try to create the absolute path relative to the project root first.
+  (let [js-file-attempts (conj (->> (util/project-dirs)
+                                    (mapv #(io/file % (:relative-path file-map)))
+                                    (filter #(.exists %))
+                                    (mapv str))
+                               (:full-path file-map))]
+    (butil/dbug* "Guessing namespace for %s\n" (butil/pp-str js-file-attempts))
+    (assert (every? #(re-find #"\.js$" %) js-file-attempts)
+            "Cannot guess namespace for files that are not Javascript. This is an bug, please report it.")
+    (->> js-file-attempts
+         (mapv cljs.closure/parse-js-ns)
+         first
+         :provides
          first
          cljs.compiler/munge)))
 

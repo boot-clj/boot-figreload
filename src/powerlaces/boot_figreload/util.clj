@@ -70,3 +70,22 @@
 (defn map-entry-with-key?
   [form k]
   (and (vector? form) (= k (first form))))
+
+(defn project-root
+  "Return the project root as string."
+  [] ^String
+  ;; AR - consider taking a more rigorous approach, for instance:
+  ;; https://github.com/clojure-emacs/refactor-nrepl/blob/v2.3.1/src/refactor_nrepl/core.clj#L61
+  (System/getProperty "user.dir"))
+
+(defn project-dirs
+  "Return all project dirs added to either source, resources or assets.
+
+  The output is a vector of java.io.File objects and uses
+  `fake.class.path` + `user.dir` for doing its job."
+  []
+  (let [files-on-cp (map io/file (str/split (System/getProperty "fake.class.path") #":"))
+        project-root-path (.toPath (io/file (project-root)))]
+    (->> files-on-cp
+         (filter #(.isDirectory %))
+         (filter #(.startsWith (.toPath %) project-root-path)))))

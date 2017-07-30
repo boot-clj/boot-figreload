@@ -244,14 +244,16 @@
                 (butil/dbug "Meta on %s:\n%s\n" (:path edn) (butil/pp-str (select-keys edn [])))))
             (if-not disable-hud
               (send-visual! @pod client-opts {:warnings warnings}))
-            ;; Only send changed files when there are no warnings
-            ;; As prev is updated only when changes are sent, changes are queued untill they can be sent
+            ;; Only send changed files when there are no warnings. As prev is
+            ;; updated only when changes are sent, changes are queued until
+            ;; they can be sent
             ;;
             ;; AR - the above assumption changes when using figwheel's client,
             ;; where the event order (unfortunately) matters.
             (send-changed! @pod
                            client-opts
                            {:target-path target-path
+                            :project-dirs (map str (util/project-dirs))
                             :cljs-asset-path cljs-asset-path
                             :cljs-opts-seq cljs-opts-seq
                             :change-set (changed @prev fileset only-by-re static-files)})
