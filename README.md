@@ -6,7 +6,7 @@ the project change. Featuring [lein-figwheel][2].
 
 * Provides the `reload` task
 * Reload client can show warnings and exceptions from ClojureScript build on **heads-up display**.
-    * Requires `[adzerk/boot-cljs "2.0.0-SNAPSHOT"]`
+    * Requires `adzerk/boot-cljs` >= `2.0.0`
     
 ## Usage
 
