@@ -41,3 +41,11 @@ pom.xml.asc
 
 /zzz/
 /target/
+
+### TAGS ####################################################################
+
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+TAGS
