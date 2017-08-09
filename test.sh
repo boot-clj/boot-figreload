@@ -3,12 +3,12 @@
 set -e
 
 echo "1.8.0"
-BOOT_CLOJURE_VERSION=1.8.0 boot run-tests
+BOOT_CLOJURE_VERSION=1.8.0 boot test
 
 echo
 echo "1.7.0"
-BOOT_CLOJURE_VERSION=1.7.0 boot run-tests
+BOOT_CLOJURE_VERSION=1.7.0 boot test
 
 echo
 echo "1.6.0"
-BOOT_CLOJURE_VERSION=1.6.0 boot run-tests
+BOOT_CLOJURE_VERSION=1.6.0 boot test

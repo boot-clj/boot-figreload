@@ -10,7 +10,7 @@
          '[adzerk.bootlaces :refer [bootlaces! build-jar push-snapshot push-release]]
          '[metosin.boot-alt-test :refer [alt-test]])
 
-(def +version+ "0.1.1-SNAPSHOT")
+(def +version+ "0.5.9")
 (bootlaces! +version+)
 
 (task-options!
