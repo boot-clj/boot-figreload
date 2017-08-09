@@ -13,8 +13,8 @@ the project change. Featuring [lein-figwheel][2].
 Add dependency to `build.boot` and `require` the task:
 
 ```clj
-(set-env! :dependencies '[[adzerk/boot-cljs "2.1.0-SNAPSHOT" :scope "test"]
-                          [powerlaces/boot-figreload "0.1.1-SNAPSHOT" :scope "test"]
+(set-env! :dependencies '[[adzerk/boot-cljs "LATEST" :scope "test"]
+                          [powerlaces/boot-figreload "LATEST" :scope "test"]
                           [pandeiro/boot-http "0.7.6" :scope "test"]
 
                           [adzerk/boot-cljs-repl "0.3.3" :scope "test"]
