@@ -1,16 +1,18 @@
+(def figwheel-dependency '[figwheel-sidecar "0.5.13"])
+
 (set-env!
  :source-paths #{"src"}
- :dependencies '[[org.clojure/clojure "1.8.0" :scope "provided"]
-                 [figwheel "0.5.9"]
-                 [adzerk/bootlaces "0.1.13"    :scope "test"]
-                 [adzerk/boot-test "1.1.0"     :scope "test"]
-                 [metosin/boot-alt-test "0.3.0" :scope "test"]])
+ :dependencies (conj '[[org.clojure/clojure "1.8.0" :scope "provided"]
+                       [adzerk/bootlaces "0.1.13"    :scope "test"]
+                       [adzerk/boot-test "1.1.0"     :scope "test"]
+                       [metosin/boot-alt-test "0.3.0" :scope "test"]]
+                     figwheel-dependency))
 
 (require '[adzerk.boot-test :refer [test]]
          '[adzerk.bootlaces :refer [bootlaces! build-jar push-snapshot push-release]]
          '[metosin.boot-alt-test :refer [alt-test]])
 
-(def +version+ "0.5.9")
+(def +version+ "0.5.13-SNAPSHOT")
 (bootlaces! +version+)
 
 (task-options!
@@ -50,5 +52,5 @@
   "Run the tests once"
   []
   (set-env! :source-paths #(conj % "test")
-            :dependencies #(conj % '[figwheel-sidecar "0.5.9"]))
+            :dependencies #(conj % figwheel-dependency))
   (alt-test))
