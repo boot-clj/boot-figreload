@@ -1,10 +1,16 @@
-### 0.5.13 - To be released
+### 0.5.14 - To be released
+
+- New release aligned with Figwheel `0.5.14`.
+
+**[compare](https://github.com/boot-clj/boot-fig reload/compare/0.5.13...0.5.14)**
+
+### [0.5.13](https://github.com/boot-clj/boot-figreload/releases/tag/0.5.13)
 
 - New release aligned with Figwheel `0.5.13`.
 
 **[compare](https://github.com/boot-clj/boot-fig reload/compare/0.5.9...0.5.13)**
 
-## [0.5.9](https://github.com/boot-clj/boot-figreload/compare/730e4ac...0.5.9)
+## [0.5.9](https://github.com/boot-clj/boot-figreload/tag/0.5.9)
 
 #### First release matching lein-figwheel's version
 

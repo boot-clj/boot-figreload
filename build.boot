@@ -1,4 +1,4 @@
-(def figwheel-dependency '[figwheel-sidecar "0.5.13"])
+(def figwheel-dependency '[figwheel-sidecar "0.5.14"])
 
 (set-env!
  :source-paths #{"src"}
@@ -12,7 +12,7 @@
          '[adzerk.bootlaces :refer [bootlaces! build-jar push-snapshot push-release]]
          '[metosin.boot-alt-test :refer [alt-test]])
 
-(def +version+ "0.5.13")
+(def +version+ "0.5.14-SNAPSHOT")
 (bootlaces! +version+)
 
 (task-options!
