@@ -1,4 +1,10 @@
-### 0.5.14 - To be released
+### 0.5.15 - to be released
+
+- New release aligned with Figwheel `0.5.15`.
+
+**[compare](https://github.com/boot-clj/boot-fig reload/compare/0.5.14...master)**
+
+### 0.5.14
 
 - New release aligned with Figwheel `0.5.14`.
 

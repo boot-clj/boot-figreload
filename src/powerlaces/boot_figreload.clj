@@ -13,7 +13,7 @@
    [powerlaces.boot-figreload.util :as util]))
 
 (def ^:private deps '[[http-kit "2.1.18"]
-                      [figwheel-sidecar "0.5.14"]])
+                      [figwheel-sidecar "0.5.15-SNAPSHOT"]])
 
 (defn- make-pod []
   (future (-> (get-env) (update-in [:dependencies] into deps) pod/make-pod)))
