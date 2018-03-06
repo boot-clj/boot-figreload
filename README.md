@@ -7,7 +7,7 @@ the project change. Featuring [lein-figwheel][2].
 * Provides the `reload` task
 * Reload client can show warnings and exceptions from ClojureScript build on **heads-up display**.
     * Requires `adzerk/boot-cljs` >= `2.0.0`
-    
+
 ## Usage
 
 Add dependency to `build.boot` and `require` the task:
@@ -50,7 +50,7 @@ Your `dev` task could therefore become:
 (set-env! :dependencies '[[adzerk/boot-cljs "LATEST" :scope "test"]
                           [powerlaces/boot-figreload "LATEST" :scope "test"]
                           [pandeiro/boot-http "0.7.6" :scope "test"]
-                          
+
                           ;; Dirac and cljs-devtoos
                           [binaryage/dirac "RELEASE" :scope "test"]
                           [binaryage/devtools "RELEASE" :scope "test"]
@@ -59,7 +59,7 @@ Your `dev` task could therefore become:
                           [adzerk/boot-cljs-repl "0.3.3" :scope "test"]
                           [com.cemerick/piggieback "0.2.1"  :scope "test"]
                           [weasel "0.7.0"  :scope "test"]
-                          
+
                           ;; Has to be `0.2.13`
                           [org.clojure/tools.nrepl "0.2.13" :scope "test"]])
 
@@ -85,10 +85,27 @@ Your `dev` task could therefore become:
                                  {:devtools/config {:features-to-install [:formatters :hints]
                                                     :fn-symbol "λ"
                                                     :print-config-overrides true}}})))
-                                                    
+
 ```
-                      
-                                                    
+
+## Node.js
+
+It should work out of the box. Two things to be aware of:
+
+ * you need to have a `main.cljs.edn` like:
+
+   ```clojure
+   {:compiler-options {:target :nodejs}
+    :init-fns [server.core/main]}
+   ```
+
+ * you need to launch your built artifact using node:
+
+   ```shell
+   $ cd target
+   $ node main.js
+   ```
+
 ## Figwheel Integration Status
 
 Ok this is a super alpha of the figwheel client in `boot-reload`.
@@ -102,7 +119,7 @@ At the moment the implemented server to client messages are:
 
 Whereas the implemented [client to server](https://github.com/arichiardi/lein-figwheel/blob/boot-reload-changes/sidecar/src/figwheel_sidecar/components/figwheel_server.clj#L75) messages are:
 
-- [ ] `"file-selected"` 
+- [ ] `"file-selected"`
 - [ ] `"callback"`
 
 ### Other tasks to complete:
@@ -113,7 +130,7 @@ Whereas the implemented [client to server](https://github.com/arichiardi/lein-fi
 - [x] Use Figwheel [init code](https://github.com/bhauman/lein-figwheel/blob/cc2d188ab041fc92551d3c4a8201729c47fe5846/sidecar/src/figwheel_sidecar/build_middleware/injection.clj#L171) (?)
 - [ ] Handle `boot-reload`'s `:asset-host` in Figwheel ([link to comments](https://github.com/adzerk-oss/boot-reload/commit/e27e330d9f688875ba19d56e825cd9e81013e58e#commitcomment-20350456))
 - [ ] Pass the right `:open-file` option to Figwheel
-- [ ] Solve the "first message lost" problem with a message queue (?) 
+- [ ] Solve the "first message lost" problem with a message queue (?)
 - [x] Assert needed dependencies
 - [ ] Repl integration (at the moment supported via [boot-cljs-repl][3])
 
